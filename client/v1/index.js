@@ -87,14 +87,38 @@ console.log(Array.from(set).length);
 // 2. Create a variable and assign it the list of products by price from lowest to highest
 // 3. Log the variable
 
-var sort_market = function (Array marketplace) {
-	return 1;
+function insertionSort(arr) {
+  for (let i = 1; i < arr.length; i++) {
+    let currentValue = arr[i]
+    let j
+    for (j = i - 1; j >= 0 && arr[j]['price'] > currentValue['price']; j--) {
+      arr[j + 1] = arr[j]
+    }
+    arr[j + 1] = currentValue
+  }
+  return arr
 }
+console.log('Marketplace, sorted by the price of the products');
+console.log(insertionSort(marketplace));
 
 // 🎯 TODO 5: Sort by date
 // 1. Create a function to sort the marketplace objects by products date
 // 2. Create a variable and assign it the list of products by date from recent to old
 // 3. Log the variable
+
+function insertionSort(arr) {
+  for (let i = 1; i < arr.length; i++) {
+    let currentValue = arr[i]
+    let j
+    for (j = i - 1; j >= 0 && arr[j]['released'] > currentValue['released']; j--) {
+      arr[j + 1] = arr[j]
+    }
+    arr[j + 1] = currentValue
+  }
+  return arr
+}
+console.log('Marketplace, sorted by release date');
+console.log(insertionSort(marketplace));
 
 // 🎯 TODO 6: Filter a specific price range
 // 1. Filter the list of products between 50€ and 100€
