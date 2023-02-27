@@ -35,6 +35,23 @@ console.log(MY_FAVORITE_BRANDS[0]);
 // I can find on these e-shops
 // 2. Log the variable
 
+var CHEAPEST_SHIRTS = [
+	{
+		'name' : 'Faguo',
+		'shirt' : 'https://www.faguo-store.com/fr/vetements/7204-aubrac-t-shirt-coton-coton-recycle-ecru-bleu.html'
+	},
+	{
+		'name' : 'Loom',
+		'shirt' : 'https://www.loom.fr/collections/t-shirts-polos/products/le-t-shirt-homme'
+	},
+	{
+		'name' : 'Ecclo',
+		'shirt' : 'https://ecclo.fr/products/t-shirt-noir-boycott-world-cup-2022'
+	}
+];
+console.log('List of the cheapest shirts on the favorite brands');
+console.table(CHEAPEST_SHIRTS);
+
 /**
  * 👕
  * Easy 😁?
@@ -48,15 +65,31 @@ console.log(MY_FAVORITE_BRANDS[0]);
 // 1. Create a variable and assign it the number of products
 // 2. Log the variable
 
+var nbOfProduct = marketplace.length;
+console.log('Number of products in marketplace');
+console.log(nbOfProduct);
+
 // 🎯 TODO 3: Brands name
 // 1. Create a variable and assign it the list of brands name only
 // 2. Log the variable
 // 3. Log how many brands we have
 
+const brandsname = marketplace.map(x => x['brand']);
+console.log('The brands of all products');
+console.log(brandsname);
+var set = new Set(brandsname);
+console.log('The different brands\' name and how many there are');
+console.log(Array.from(set));
+console.log(Array.from(set).length);
+
 // 🎯 TODO 4: Sort by price
 // 1. Create a function to sort the marketplace products by price
 // 2. Create a variable and assign it the list of products by price from lowest to highest
 // 3. Log the variable
+
+var sort_market = function (Array marketplace) {
+	return 1;
+}
 
 // 🎯 TODO 5: Sort by date
 // 1. Create a function to sort the marketplace objects by products date
