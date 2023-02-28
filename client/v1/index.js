@@ -575,3 +575,6 @@ console.log("This time, only the jacket variable has the favorite tag. We've cop
 // 🎯 LAST TODO: Save in localStorage
 // 1. Save MY_FAVORITE_BRANDS in the localStorage
 // 2. log the localStorage
+
+localStorage.setItem('MY_FAVORITE_BRANDS', MY_FAVORITE_BRANDS);
+console.log(localStorage);
