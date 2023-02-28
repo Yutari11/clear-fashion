@@ -458,6 +458,8 @@ const COTELE_PARIS = [
   }
 ];
 
+console.log("Now onto the new table 'COTELE_PARIS'");
+console.log(COTELE_PARIS);
 // 🎯 TODO 1: New released products
 // // 1. Log if we have new products only (true or false)
 // // A new product is a product `released` less than 2 weeks.
@@ -497,11 +499,18 @@ if (reasonable_price) {
 // 1. Find the product with the uuid `2b9a47e3-ed73-52f6-8b91-379e9c8e526c`
 // 2. Log the product
 
+console.log("Product from Cotele with uuid '2b9a47e3-ed73-52f6-8b91-379e9c8e526c'");
 console.log(COTELE_PARIS.find(x => x['uuid'] == '2b9a47e3-ed73-52f6-8b91-379e9c8e526c'));
 
 // 🎯 TODO 4: Delete a specific product
 // 1. Delete the product with the uuid `2b9a47e3-ed73-52f6-8b91-379e9c8e526c`
 // 2. Log the new list of product
+
+var index = COTELE_PARIS.indexOf(COTELE_PARIS.find(x => x['uuid'] == '2b9a47e3-ed73-52f6-8b91-379e9c8e526c'));
+COTELE_PARIS.splice(index,1);
+console.log("New array COTELE_PARIS after deletion of the product with uuid '2b9a47e3-ed73-52f6-8b91-379e9c8e526c'");
+console.log(COTELE_PARIS);
+
 
 // 🎯 TODO 5: Save the favorite product
 // We declare and assign a variable called `blueJacket`
