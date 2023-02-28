@@ -79,7 +79,7 @@ console.log('The brands of all products');
 console.log(brandsname);
 var set = new Set(brandsname);
 console.log('The different brands\' name and how many there are');
-console.log(Array.from(set));
+console.table(Array.from(set));
 console.log(Array.from(set).length);
 
 // 🎯 TODO 4: Sort by price
@@ -100,7 +100,7 @@ function insertionSortPrice(arr) {
 }
 const arr = [...marketplace];
 console.log('Marketplace, sorted by the price of the products');
-console.log(insertionSortPrice(arr));
+console.table(insertionSortPrice(arr));
 
 // 🎯 TODO 5: Sort by date
 // 1. Create a function to sort the marketplace objects by products date
@@ -120,7 +120,7 @@ function insertionSortReleased (arr) {
 }
 const arr2 = [...marketplace];
 console.log('Marketplace, sorted by release date (from latest to earliest)');
-console.log(insertionSortReleased(arr2));
+console.table(insertionSortReleased(arr2));
 
 // 🎯 TODO 6: Filter a specific price range
 // 1. Filter the list of products between 50€ and 100€
@@ -134,7 +134,7 @@ for(i = 0; i < marketplace.length; i++) {
 	}
 }
 console.log('All marketplace products which price ranges from 50 to 100');
-console.log(marketplace_50_100_euros);
+console.table(marketplace_50_100_euros);
 
 // 🎯 TODO 7: Average price
 // 1. Determine the average price of the marketplace
@@ -269,8 +269,6 @@ for(i = 0; i < keys.length; i++){
 	var p90 = (temp[Math.floor(p90_nb)]['price'] + temp[Math.ceil(p90_nb)]['price'])/2;
 	console.log("P90 price value for " + keys[i] + " = " + p90.toString());
 }
-
-
 
 /**
  * 🧥
@@ -463,6 +461,23 @@ const COTELE_PARIS = [
 // 🎯 TODO 1: New released products
 // // 1. Log if we have new products only (true or false)
 // // A new product is a product `released` less than 2 weeks.
+
+
+var current_date = new Date().toJSON();
+var recent_bool = false;
+for (i = 0; i < COTELE_PARIS.length; i++){
+	var date_produit = Date.parse(COTELE_PARIS[i]['released']);
+	const diffTime = Math.abs(current_date - date_produit);
+	const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+	if(diffDays <= 14){
+		recent_bool = true;
+	}
+}
+console.log("Is there any product release recently ?");
+console.log(recent_bool);
+	
+
+
 
 // 🎯 TODO 2: Reasonable price
 // // 1. Log if coteleparis is a reasonable price shop (true or false)
