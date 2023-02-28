@@ -533,7 +533,15 @@ let jacket = blueJacket;
 jacket.favorite = true;
 
 // 1. Log `blueJacket` and `jacket` variables
+
+console.log("Let's log both blueJacket and jacket variables");
+console.log(blueJacket);
+console.log(jacket);
+
 // 2. What do you notice?
+
+console.log('Both Bluejacket and jacket variable have gone through the modification.');
+console.log('That is because jacket is not a copy of blueJacket, but merely a reference to it');
 
 // we make a new assignment again
 blueJacket = {
@@ -549,6 +557,14 @@ blueJacket = {
 };
 
 // 3. Update `jacket` property with `favorite` to true WITHOUT changing blueJacket properties
+
+jacket = {...blueJacket};
+jacket.favorite = true;
+console.log("Let's log both blueJacket and jacket variables once again.");
+console.log(blueJacket);
+console.log(jacket);
+console.log("This time, only the jacket variable has the favorite tag. We've copied blueJacket");
+
 
 /**
  * 🎬
