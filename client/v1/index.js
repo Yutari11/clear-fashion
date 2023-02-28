@@ -497,6 +497,8 @@ if (reasonable_price) {
 // 1. Find the product with the uuid `2b9a47e3-ed73-52f6-8b91-379e9c8e526c`
 // 2. Log the product
 
+console.log(COTELE_PARIS.find(x => x['uuid'] == '2b9a47e3-ed73-52f6-8b91-379e9c8e526c'));
+
 // 🎯 TODO 4: Delete a specific product
 // 1. Delete the product with the uuid `2b9a47e3-ed73-52f6-8b91-379e9c8e526c`
 // 2. Log the new list of product
