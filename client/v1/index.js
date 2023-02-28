@@ -173,6 +173,18 @@ console.log(avg);
 
 var dico = {};
 
+for(i = 0; i < marketplace.length; i++){
+	if(!(marketplace[i]['brand'] in dico)){
+		dico[marketplace[i]['brand']] = [marketplace[i]];
+	} else {
+		dico[marketplace[i]['brand']].push(marketplace[i]);
+	}
+};
+console.log('All products grouped by brands');
+console.log(dico);
+
+		
+
 // 2. Log the variable
 // 3. Log the number of products by brands
 
