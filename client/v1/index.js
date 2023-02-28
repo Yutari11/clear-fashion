@@ -170,6 +170,9 @@ console.log(avg);
 //   'brand-name-n': [{...}, {...}, ..., {...}],
 // };
 //
+// 2. Log the variable
+// 3. Log the number of products by brands
+
 
 var dico = {};
 
@@ -183,14 +186,40 @@ for(i = 0; i < marketplace.length; i++){
 console.log('All products grouped by brands');
 console.log(dico);
 
-		
+var keys = Object.keys(dico);
+for(i = 0; i < keys.length; i++){
+	console.log(keys[i] + ':' + dico[keys[i]].length.toString());
+}
+	
 
-// 2. Log the variable
-// 3. Log the number of products by brands
 
 // 🎯 TODO 9: Sort by price for each brand
 // 1. For each brand, sort the products by price, from highest to lowest
 // 2. Log the sort
+
+//We can take the dictionary we created for the last question.
+
+function insertionSortPriceHighestToLowest(arr) {
+  for (let i = 1; i < arr.length; i++) {
+    let currentValue = arr[i]
+    let j
+    for (j = i - 1; j >= 0 && arr[j]['price'] < currentValue['price']; j--) {
+      arr[j + 1] = arr[j]
+    }
+    arr[j + 1] = currentValue
+  }
+  return arr
+}
+
+var dico_sorted = {};
+
+for(i = 0; i < keys.length; i++){
+	var temp_list = [...dico[keys[i]]];
+	dico_sorted[keys[i]] = insertionSortPriceHighestToLowest(temp_list);	
+}
+console.log('Marketplace sorted by price and brand');
+console.log(dico_sorted);
+
 
 // 🎯 TODO 10: Sort by date for each brand
 // 1. For each brand, sort the products by date, from old to recent
