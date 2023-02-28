@@ -211,14 +211,14 @@ function insertionSortPriceHighestToLowest(arr) {
   return arr
 }
 
-var dico_sorted = {};
+var dico_sorted_price = {};
 
 for(i = 0; i < keys.length; i++){
 	var temp_list = [...dico[keys[i]]];
-	dico_sorted[keys[i]] = insertionSortPriceHighestToLowest(temp_list);	
+	dico_sorted_price[keys[i]] = insertionSortPriceHighestToLowest(temp_list);	
 }
 console.log('Marketplace sorted by price and brand');
-console.log(dico_sorted);
+console.log(dico_sorted_price);
 
 
 // 🎯 TODO 10: Sort by date for each brand
@@ -239,14 +239,14 @@ function insertionSortReleasedOldToRecent (arr) {
   return arr
 }
 
-var dico_sorted = {};
+var dico_sorted_date = {};
 
 for(i = 0; i < keys.length; i++){
 	var temp_list = [...dico[keys[i]]];
-	dico_sorted[keys[i]] = insertionSortReleasedOldToRecent(temp_list);	
+	dico_sorted_date[keys[i]] = insertionSortReleasedOldToRecent(temp_list);	
 }
 console.log('Marketplace sorted by release date and brand');
-console.log(dico_sorted);
+console.log(dico_sorted_date);
 
 
 /**
@@ -259,6 +259,18 @@ console.log(dico_sorted);
 // 🎯 TODO 11: Compute the p90 price value
 // 1. Compute the p90 price value of each brand
 // The p90 value (90th percentile) is the lower value expected to be exceeded in 90% of the products
+
+//For this question, because we are supposed to sort the values by price for each brand,
+//we can simply take the dictionary from Question 9, where we did this exact thing.
+
+for(i = 0; i < keys.length; i++){
+	var temp = [...dico_sorted_price[keys[i]]].reverse();
+	var p90_nb = temp.length*0.9;
+	var p90 = (temp[Math.floor(p90_nb)]['price'] + temp[Math.ceil(p90_nb)]['price'])/2;
+	console.log("P90 price value for " + keys[i] + " = " + p90.toString());
+}
+
+
 
 /**
  * 🧥
