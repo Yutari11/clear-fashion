@@ -225,6 +225,30 @@ console.log(dico_sorted);
 // 1. For each brand, sort the products by date, from old to recent
 // 2. Log the sort
 
+//We can once again take the dictionary we created for question 8.
+
+function insertionSortReleasedOldToRecent (arr) {
+  for (let i = 1; i < arr.length; i++) {
+    let currentValue = arr[i]
+    let j
+    for (j = i - 1; j >= 0 && arr[j]['released'] > currentValue['released']; j--) {
+      arr[j + 1] = arr[j]
+    }
+    arr[j + 1] = currentValue
+  }
+  return arr
+}
+
+var dico_sorted = {};
+
+for(i = 0; i < keys.length; i++){
+	var temp_list = [...dico[keys[i]]];
+	dico_sorted[keys[i]] = insertionSortReleasedOldToRecent(temp_list);	
+}
+console.log('Marketplace sorted by release date and brand');
+console.log(dico_sorted);
+
+
 /**
  * 💶
  * Let's talk about money now
