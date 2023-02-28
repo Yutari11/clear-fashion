@@ -170,6 +170,9 @@ console.log(avg);
 //   'brand-name-n': [{...}, {...}, ..., {...}],
 // };
 //
+
+var dico = {};
+
 // 2. Log the variable
 // 3. Log the number of products by brands
 
