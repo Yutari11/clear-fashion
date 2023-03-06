@@ -20,12 +20,14 @@ Search for available brands list
 // current products on the page
 let currentProducts = [];
 let currentPagination = {};
+let brands = [];
 
 // instantiate the selectors
 const selectShow = document.querySelector('#show-select');
 const selectPage = document.querySelector('#page-select');
 const sectionProducts = document.querySelector('#products');
 const spanNbProducts = document.querySelector('#nbProducts');
+const selectBrand = document.querySelector('#brand-select');
 
 /**
  * Set global value
@@ -36,6 +38,30 @@ const setCurrentProducts = ({result, meta}) => {
   currentProducts = result;
   currentPagination = meta;
 };
+
+/*
+We fetch the brands
+*/ 
+
+const fetchBrands = async () => {
+  try {
+    const response = await fetch(
+      'https://clear-fashion-api.vercel.app/brands'
+    );
+    const body = await response.json();
+
+    if (body.success !== true) {
+      console.error(body);
+      return brands;
+    }
+    return body.data.result;
+  } catch (error) {
+    console.error(error);
+    return brands;
+  }
+};
+
+
 
 /**
  * Fetch products from api
@@ -54,7 +80,6 @@ const fetchProducts = async (page = 1, size = 12) => {
       console.error(body);
       return {currentProducts, currentPagination};
     }
-
     return body.data;
   } catch (error) {
     console.error(error);
@@ -102,6 +127,16 @@ const renderPagination = pagination => {
   selectPage.selectedIndex = currentPage - 1;
 };
 
+const renderBrands = brands => {
+  const options = Array.from(
+    {'length': brands.length+1},
+    (value, index) => `<option value="${index + 1}">${index + 1}</option>`
+  ).join('');
+
+  selectPage.innerHTML = options;
+  selectPage.selectedIndex = currentPage - 1;
+};
+
 /**
  * Render page selector
  * @param  {Object} pagination
@@ -127,6 +162,13 @@ const render = (products, pagination) => {
  */
 selectShow.addEventListener('change', async (event) => {
   const products = await fetchProducts(currentPagination.currentPage, parseInt(event.target.value));
+
+  setCurrentProducts(products);
+  render(currentProducts, currentPagination);
+});
+
+selectPage.addEventListener('change', async (event) => {
+  const products = await fetchProducts(parseInt(event.target.value), currentPagination.pageSize);
 
   setCurrentProducts(products);
   render(currentProducts, currentPagination);
