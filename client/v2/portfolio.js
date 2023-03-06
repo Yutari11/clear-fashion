@@ -18,6 +18,7 @@ Search for available brands list
 */
 
 // current products on the page
+let allProducts = [];
 let currentProducts = [];
 let currentPagination = {};
 let brands = [];
@@ -27,6 +28,7 @@ const selectShow = document.querySelector('#show-select');
 const selectPage = document.querySelector('#page-select');
 const sectionProducts = document.querySelector('#products');
 const spanNbProducts = document.querySelector('#nbProducts');
+const spanNbBrands = document.querySelector('#nbBrands');
 const selectBrand = document.querySelector('#brand-select');
 
 /**
@@ -35,8 +37,10 @@ const selectBrand = document.querySelector('#brand-select');
  * @param {Object} meta - pagination meta info
  */
 const setCurrentProducts = ({result, meta}) => {
-  currentProducts = result;
-  currentPagination = meta;
+  allProducts = result;
+  if (currentPagination == {}) {
+	currentPagination = meta;
+  }
 };
 
 /*
@@ -54,14 +58,14 @@ const fetchBrands = async () => {
       console.error(body);
       return brands;
     }
-    return body.data.result;
+	let temp = body.data.result;
+	temp.unshift("All brands");
+    return temp;
   } catch (error) {
     console.error(error);
     return brands;
   }
 };
-
-
 
 /**
  * Fetch products from api
@@ -69,10 +73,10 @@ const fetchBrands = async () => {
  * @param  {Number}  [size=12] - size of the page
  * @return {Object}
  */
-const fetchProducts = async (page = 1, size = 12) => {
+const fetchProducts = async () => {
   try {
     const response = await fetch(
-      `https://clear-fashion-api.vercel.app?page=${page}&size=${size}`
+      `https://clear-fashion-api.vercel.app?size=223`
     );
     const body = await response.json();
 
@@ -86,6 +90,24 @@ const fetchProducts = async (page = 1, size = 12) => {
     return {currentProducts, currentPagination};
   }
 };
+
+
+/* Here we will create the currentProduct array where all Products to be displayed
+will be added
+*/
+
+const spliceProducts = (page = 1, size = 12) => {
+	const start = ((page-1) * size);
+	currentProducts = allProducts.filter((item, index)=>{
+      return index >= start && index < size + start ;
+    });
+	currentPagination.pageSize = size;
+	currentPagination.pageCount = Math.ceil(222/size);
+	currentPagination.currentPage = page;
+	//console.log(currentPagination);
+	
+};
+
 
 /**
  * Render list of products
@@ -129,12 +151,12 @@ const renderPagination = pagination => {
 
 const renderBrands = brands => {
   const options = Array.from(
-    {'length': brands.length+1},
-    (value, index) => `<option value="${index + 1}">${index + 1}</option>`
+    brands,
+    x => `<option value="${x}">${x}</option>`
   ).join('');
 
-  selectPage.innerHTML = options;
-  selectPage.selectedIndex = currentPage - 1;
+  selectBrand.innerHTML = options;
+  selectBrand.selectedIndex = 0;
 };
 
 /**
@@ -142,15 +164,17 @@ const renderBrands = brands => {
  * @param  {Object} pagination
  */
 const renderIndicators = pagination => {
-  const {count} = pagination;
+  const count = pagination.count;
 
   spanNbProducts.innerHTML = count;
+  spanNbBrands.innerHTML = brands.length - 1;
 };
 
 const render = (products, pagination) => {
   renderProducts(products);
   renderPagination(pagination);
   renderIndicators(pagination);
+  renderBrands(brands);
 };
 
 /**
@@ -161,22 +185,32 @@ const render = (products, pagination) => {
  * Select the number of products to display
  */
 selectShow.addEventListener('change', async (event) => {
-  const products = await fetchProducts(currentPagination.currentPage, parseInt(event.target.value));
-
+  const products = await fetchProducts();
   setCurrentProducts(products);
+  spliceProducts(currentPagination.currentPage, parseInt(event.target.value));
   render(currentProducts, currentPagination);
 });
 
 selectPage.addEventListener('change', async (event) => {
-  const products = await fetchProducts(parseInt(event.target.value), currentPagination.pageSize);
-
+  const products = await fetchProducts();
   setCurrentProducts(products);
+  spliceProducts(parseInt(event.target.value), currentPagination.pageSize);
   render(currentProducts, currentPagination);
 });
 
+selectBrand.addEventListener('change', async (event) => {
+  const products = await fetchProducts();
+  setCurrentProducts(products);
+  spliceProducts(currentPagination.currentPage, currentPagination.pageSize);
+  render(currentProducts, currentPagination);
+});
+
+
+
 document.addEventListener('DOMContentLoaded', async () => {
   const products = await fetchProducts();
-
+  brands = await fetchBrands();
   setCurrentProducts(products);
+  spliceProducts();
   render(currentProducts, currentPagination);
 });
