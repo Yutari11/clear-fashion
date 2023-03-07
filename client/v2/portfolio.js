@@ -192,7 +192,7 @@ const renderBrands = brands => {
  * @param  {Object} pagination
  */
 const renderIndicators = pagination => {
-  const count = pagination.count;
+  const count = allProductsSorted.length;
 
   spanNbProducts.innerHTML = count;
   spanNbBrands.innerHTML = brands.length - 1;
@@ -232,7 +232,7 @@ selectBrand.addEventListener('change', async (event) => {
   const products = await fetchProducts();
   setCurrentProducts(products);
   sortByBrands(allProducts, event.target.value);
-  spliceProducts(currentPagination.currentPage, currentPagination.pageSize);
+  spliceProducts(1, currentPagination.pageSize);
   render(currentProducts, currentPagination);
 });
 
