@@ -19,9 +19,12 @@ Search for available brands list
 
 // current products on the page
 let allProducts = [];
+let allProductsSorted = [];
 let currentProducts = [];
 let currentPagination = {};
+let currentBrandIndex = 0;
 let brands = [];
+let i;
 
 // instantiate the selectors
 const selectShow = document.querySelector('#show-select');
@@ -42,6 +45,31 @@ const setCurrentProducts = ({result, meta}) => {
 	currentPagination = meta;
   }
 };
+
+/*
+We sort all the products,
+keeping only those of
+a certain brand
+*/
+
+const sortByBrands = (allProducts, brand = "All brands") => {
+	allProductsSorted = [];
+	currentBrandIndex = brands.findIndex(x => (x == brand));
+	if (brand != "All brands"){
+		for (i = 0; i < allProducts.length; i++) {
+			if (allProducts[i].brand == brand) {
+				allProductsSorted.push(allProducts[i]);
+				
+			}
+			
+		}
+		
+	}
+	else {
+		allProductsSorted = [...allProducts];
+	}
+	
+}
 
 /*
 We fetch the brands
@@ -98,11 +126,11 @@ will be added
 
 const spliceProducts = (page = 1, size = 12) => {
 	const start = ((page-1) * size);
-	currentProducts = allProducts.filter((item, index)=>{
+	currentProducts = allProductsSorted.filter((item, index)=>{
       return index >= start && index < size + start ;
     });
 	currentPagination.pageSize = size;
-	currentPagination.pageCount = Math.ceil(222/size);
+	currentPagination.pageCount = Math.ceil(allProductsSorted.length/size);
 	currentPagination.currentPage = page;
 	//console.log(currentPagination);
 	
@@ -156,7 +184,7 @@ const renderBrands = brands => {
   ).join('');
 
   selectBrand.innerHTML = options;
-  selectBrand.selectedIndex = 0;
+  selectBrand.selectedIndex = currentBrandIndex;
 };
 
 /**
@@ -187,6 +215,7 @@ const render = (products, pagination) => {
 selectShow.addEventListener('change', async (event) => {
   const products = await fetchProducts();
   setCurrentProducts(products);
+  sortByBrands(allProducts, brands[currentBrandIndex]);
   spliceProducts(currentPagination.currentPage, parseInt(event.target.value));
   render(currentProducts, currentPagination);
 });
@@ -194,6 +223,7 @@ selectShow.addEventListener('change', async (event) => {
 selectPage.addEventListener('change', async (event) => {
   const products = await fetchProducts();
   setCurrentProducts(products);
+  sortByBrands(allProducts, brands[currentBrandIndex]);
   spliceProducts(parseInt(event.target.value), currentPagination.pageSize);
   render(currentProducts, currentPagination);
 });
@@ -201,6 +231,7 @@ selectPage.addEventListener('change', async (event) => {
 selectBrand.addEventListener('change', async (event) => {
   const products = await fetchProducts();
   setCurrentProducts(products);
+  sortByBrands(allProducts, event.target.value);
   spliceProducts(currentPagination.currentPage, currentPagination.pageSize);
   render(currentProducts, currentPagination);
 });
@@ -211,6 +242,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   const products = await fetchProducts();
   brands = await fetchBrands();
   setCurrentProducts(products);
+  sortByBrands(allProducts);
   spliceProducts();
   render(currentProducts, currentPagination);
+  console.log(currentPagination);
 });
