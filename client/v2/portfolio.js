@@ -156,11 +156,12 @@ const renderProducts = products => {
     .map(product => {
       return `
       <div class="product" id=${product.uuid}>
-        <span>${product.brand}</span>
-        <a href="${product.link}">${product.name}</a>
-        <span>${product.price}</span>
+        <span>${product.brand}\t</span>
+        <a href="${product.link}">${product.name}\t</a>
+        <span>${product.price}\t</span>
 		<span>${product.released}</span>
       </div>
+	  <br>
     `;
     })
     .join('');
