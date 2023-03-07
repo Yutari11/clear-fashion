@@ -25,6 +25,8 @@ let currentPagination = {};
 let currentBrandIndex = 0;
 let brands = [];
 let i;
+let sortPriceBool = false;
+let sortDateBool = false;
 
 // instantiate the selectors
 const selectShow = document.querySelector('#show-select');
@@ -33,6 +35,10 @@ const sectionProducts = document.querySelector('#products');
 const spanNbProducts = document.querySelector('#nbProducts');
 const spanNbBrands = document.querySelector('#nbBrands');
 const selectBrand = document.querySelector('#brand-select');
+const sortPriceButton = document.querySelector('#sort-price');
+const sortDateButton = document.querySelector('#sort-date');
+const sortNoneButton = document.querySelector('#sort-none');
+
 
 /**
  * Set global value
@@ -70,6 +76,8 @@ const sortByBrands = (allProducts, brand = "All brands") => {
 	}
 	
 }
+
+
 
 /*
 We fetch the brands
@@ -151,6 +159,7 @@ const renderProducts = products => {
         <span>${product.brand}</span>
         <a href="${product.link}">${product.name}</a>
         <span>${product.price}</span>
+		<span>${product.released}</span>
       </div>
     `;
     })
@@ -216,6 +225,17 @@ selectShow.addEventListener('change', async (event) => {
   const products = await fetchProducts();
   setCurrentProducts(products);
   sortByBrands(allProducts, brands[currentBrandIndex]);
+  if (sortPriceBool) {
+	  allProductsSorted.sort((a,b) => a.price - b.price);
+  }
+  if (sortDateBool) {
+	  allProductsSorted.sort((a,b) => {
+			const da = new Date(a.released);
+			const db = new Date(b.released);
+			return da - db;
+		  
+	  });
+  }
   spliceProducts(currentPagination.currentPage, parseInt(event.target.value));
   render(currentProducts, currentPagination);
 });
@@ -224,6 +244,17 @@ selectPage.addEventListener('change', async (event) => {
   const products = await fetchProducts();
   setCurrentProducts(products);
   sortByBrands(allProducts, brands[currentBrandIndex]);
+  if (sortPriceBool) {
+	  allProductsSorted.sort((a,b) => a.price - b.price);
+  }
+  if (sortDateBool) {
+	  allProductsSorted.sort((a,b) => {
+			const da = new Date(a.released);
+			const db = new Date(b.released);
+			return da - db;
+		  
+	  });
+  }
   spliceProducts(parseInt(event.target.value), currentPagination.pageSize);
   render(currentProducts, currentPagination);
 });
@@ -232,8 +263,70 @@ selectBrand.addEventListener('change', async (event) => {
   const products = await fetchProducts();
   setCurrentProducts(products);
   sortByBrands(allProducts, event.target.value);
+  if (sortPriceBool) {
+	  allProductsSorted.sort((a,b) => a.price - b.price);
+  }
+  if (sortDateBool) {
+	  allProductsSorted.sort((a,b) => {
+			const da = new Date(a.released);
+			const db = new Date(b.released);
+			return da - db;
+		  
+	  });
+  }
   spliceProducts(1, currentPagination.pageSize);
   render(currentProducts, currentPagination);
+});
+
+sortPriceButton.addEventListener('click', async (event) => {
+  const products = await fetchProducts();
+  setCurrentProducts(products);
+  sortByBrands(allProducts, brands[currentBrandIndex]);
+  if (!sortPriceBool) {
+	allProductsSorted.sort((a,b) => a.price - b.price);
+	sortPriceBool = true;
+	sortPriceButton.style.backgroundColor = "#63E5FF";
+
+  }
+  else {
+	sortPriceBool = false;
+	sortPriceButton.style.backgroundColor = "white";
+  }
+  if (sortDateBool) {
+	sortDateBool = false;
+	sortDateButton.style.backgroundColor = "white";
+  }
+  
+  spliceProducts(1, currentPagination.pageSize);
+  render(currentProducts, currentPagination);
+});
+
+sortDateButton.addEventListener('click', async (event) => {
+  const products = await fetchProducts();
+  setCurrentProducts(products);
+  sortByBrands(allProducts, brands[currentBrandIndex]);
+  if (sortPriceBool) {
+	sortPriceBool = false;
+	sortPriceButton.style.backgroundColor = "white";
+  }
+  if (!sortDateBool) {
+	allProductsSorted.sort((a,b) => {
+			const da = new Date(a.released);
+			const db = new Date(b.released);
+			return da - db;
+		  
+	  });
+	sortDateBool = true;
+	sortDateButton.style.backgroundColor = "#63E5FF";
+
+  }
+  else {
+	sortDateBool = false;
+	sortDateButton.style.backgroundColor = "white";
+  }
+  spliceProducts(1, currentPagination.pageSize);
+  render(currentProducts, currentPagination);
+  console.log(allProductsSorted);
 });
 
 
@@ -245,5 +338,5 @@ document.addEventListener('DOMContentLoaded', async () => {
   sortByBrands(allProducts);
   spliceProducts();
   render(currentProducts, currentPagination);
-  console.log(currentPagination);
+  console.log(allProductsSorted);
 });

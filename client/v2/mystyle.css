@@ -33,6 +33,26 @@ h1 {
   margin-left: 10px;
 }
 
+
+#sort-date,
+#sort-price,
+#sort-none {
+	padding: 5px;
+	margin-left: 20px;
+	margin-right: 20px;
+	border: none;
+	background-color: white;
+	box-shadow: 0 12px 16px 0 rgba(0,0,0,0.07), 0 17px 50px 0 rgba(0,0,0,0.025);
+	
+}
+
+#sort-price:hover,
+#sort-date:hover,
+#sort-none:hover {
+  box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+  border: 0.5px solid gray;
+}
+
 #filters {
   display: flex;
   justify-content: center;
