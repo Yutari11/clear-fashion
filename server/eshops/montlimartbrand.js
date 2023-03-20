@@ -8,8 +8,7 @@ const cheerio = require('cheerio');
  */
 const parse = data => {
   const $ = cheerio.load(data);
-
-  return $('.product-miniature js-product-miniature h-100 position-relative .text-center position-relative')
+  return $('.products-list.row .text-center.position-relative')
     .map((i, element) => {
       const name = $(element)
         .find('.text-reset')
