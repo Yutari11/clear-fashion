@@ -18,15 +18,14 @@ async function main(){
     const client = await MongoClient.connect(MONGODB_URI, {'useNewUrlParser': true});
 	const db =  client.db(MONGODB_DB_NAME)
 	
+	function insert_marketplace() {
+		const products = marketplace;
+		const collection = db.collection('products');
+		const result = collection.insertMany(products, (err) => {
+		if (err) {console.log("error!");console.log(err);} else {console.log("yo"); client.close();} });
+	}
 	
-	
-    const products = marketplace;
-
-
-	const collection = db.collection('products');
-	const result = collection.insertMany(products, (err) => {
-	if (err) {console.log("error!");console.log(err);} else {console.log("yo"); client.close();} });
-
+	insert_marketplace();
 	//console.log(result);
 	//client.close();
 }
