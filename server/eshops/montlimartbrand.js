@@ -8,12 +8,7 @@ const cheerio = require('cheerio');
  */
 const parse = data => {
   const $ = cheerio.load(data);
-<<<<<<< HEAD
   return $('.products-list.row .text-center.position-relative')
-=======
-
-  return $('.product-miniature js-product-miniature h-100 position-relative .text-center position-relative')
->>>>>>> 9547e1b (feat(shop) scrape new products)
     .map((i, element) => {
       const name = $(element)
         .find('.text-reset')
