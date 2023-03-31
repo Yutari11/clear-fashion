@@ -61,7 +61,12 @@ const spanMostRecent = document.querySelector('#most-recent')
  * @param {Object} meta - pagination meta info
  */
 const setCurrentProducts = (results) => {
-  allProducts = results.results;
+  if (results.results != undefined) {
+    allProducts = results.results;
+  }
+  else {
+    allProducts = [];
+  }
   //console.log('All products');
   //console.log(allProducts);
   currentPagination = {'currentPage':results.currentPage, 'pageCount': Math.ceil(results.totalProducts /results.limit), 'limit' : results.limit, 'totalProducts': results.totalProducts, "nbNew" : results.nbNew, "p50":results.p50, "p90":results.p90,"p95":results.p95, "most_recent":results.most_recent};
