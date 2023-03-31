@@ -25,8 +25,14 @@ let currentPagination = {};
 let currentBrandIndex = 0;
 let brands = [];
 let i;
-let sortPriceBool = false;
-let sortDateBool = false;
+let Reason_Price_Bool = false;
+let recent_bool = false;
+const search = "https://clear-fashion-seven-kappa.vercel.app/products/search";
+var arg = "";
+let currentBrand = "All brands";
+let currentSort = "no-sort";
+let currentSortIndex = 0;
+let sorts = ["no-sort", "price-asc", "price-desc", "date-asc", "date-desc"]
 
 // instantiate the selectors
 const selectShow = document.querySelector('#show-select');
@@ -35,10 +41,18 @@ const sectionProducts = document.querySelector('#products');
 const spanNbProducts = document.querySelector('#nbProducts');
 const spanNbBrands = document.querySelector('#nbBrands');
 const selectBrand = document.querySelector('#brand-select');
-const sortPriceButton = document.querySelector('#sort-price');
-const sortDateButton = document.querySelector('#sort-date');
+const Reason_Price = document.querySelector('#reason-price');
+const recent = document.querySelector('#recent');
 const sortNoneButton = document.querySelector('#sort-none');
 const sortSelector = document.querySelector('#sort-select');
+const spanNbNew = document.querySelector('#nbNew');
+const spanp50 = document.querySelector('#p50');
+const spanp90 = document.querySelector('#p90');
+const spanp95 = document.querySelector('#p95');
+const spanMostRecent = document.querySelector('#most-recent')
+
+
+
 
 
 /**
@@ -46,38 +60,13 @@ const sortSelector = document.querySelector('#sort-select');
  * @param {Array} result - products to display
  * @param {Object} meta - pagination meta info
  */
-const setCurrentProducts = ({result, meta}) => {
-  allProducts = result;
-  if (currentPagination == {}) {
-	currentPagination = meta;
-  }
+const setCurrentProducts = (results) => {
+  allProducts = results.results;
+  //console.log('All products');
+  //console.log(allProducts);
+  currentPagination = {'currentPage':results.currentPage, 'pageCount': Math.ceil(results.totalProducts /results.limit), 'limit' : results.limit, 'totalProducts': results.totalProducts, "nbNew" : results.nbNew, "p50":results.p50, "p90":results.p90,"p95":results.p95, "most_recent":results.most_recent};
+  console.log(currentPagination);
 };
-
-/*
-We sort all the products,
-keeping only those of
-a certain brand
-*/
-
-const sortByBrands = (allProducts, brand = "All brands") => {
-	allProductsSorted = [];
-	currentBrandIndex = brands.findIndex(x => (x == brand));
-	if (brand != "All brands"){
-		for (i = 0; i < allProducts.length; i++) {
-			if (allProducts[i].brand == brand) {
-				allProductsSorted.push(allProducts[i]);
-				
-			}
-			
-		}
-		
-	}
-	else {
-		allProductsSorted = [...allProducts];
-	}
-	
-}
-
 
 
 /*
@@ -87,7 +76,7 @@ We fetch the brands
 const fetchBrands = async () => {
   try {
     const response = await fetch(
-      'https://clear-fashion-api.vercel.app/brands'
+      'https://clear-fashion-seven-kappa.vercel.app/brands'
     );
     const body = await response.json();
 
@@ -110,40 +99,24 @@ const fetchBrands = async () => {
  * @param  {Number}  [size=12] - size of the page
  * @return {Object}
  */
-const fetchProducts = async () => {
-  try {
+const fetchProducts = async (fetchLine = 'https://clear-fashion-seven-kappa.vercel.app/products/search' ) => {
+
+    try {
     const response = await fetch(
-      `https://clear-fashion-api.vercel.app?size=223`
+      fetchLine
     );
     const body = await response.json();
-
     if (body.success !== true) {
       console.error(body);
       return {currentProducts, currentPagination};
     }
-    return body.data;
+    return body;
   } catch (error) {
     console.error(error);
     return {currentProducts, currentPagination};
   }
 };
 
-
-/* Here we will create the currentProduct array where all Products to be displayed
-will be added
-*/
-
-const spliceProducts = (page = 1, size = 12) => {
-	const start = ((page-1) * size);
-	currentProducts = allProductsSorted.filter((item, index)=>{
-      return index >= start && index < size + start ;
-    });
-	currentPagination.pageSize = size;
-	currentPagination.pageCount = Math.ceil(allProductsSorted.length/size);
-	currentPagination.currentPage = page;
-	//console.log(currentPagination);
-	
-};
 
 
 /**
@@ -203,10 +176,16 @@ const renderBrands = brands => {
  * @param  {Object} pagination
  */
 const renderIndicators = pagination => {
-  const count = allProductsSorted.length;
+  const count = currentPagination.totalProducts;
 
   spanNbProducts.innerHTML = count;
   spanNbBrands.innerHTML = brands.length - 1;
+  spanNbNew.innerHTML = currentPagination.nbNew;
+  spanp50.innerHTML = currentPagination.p50;
+  spanp90.innerHTML = currentPagination.p90;
+  spanp95.innerHTML = currentPagination.p95;
+  spanMostRecent.innerHTML = currentPagination.most_recent;
+
 };
 
 const render = (products, pagination) => {
@@ -216,129 +195,117 @@ const render = (products, pagination) => {
   renderBrands(brands);
 };
 
+
+
+const setArg = () => {
+    arg = '?';
+    arg = arg + 'limit=' + String(currentPagination.limit);
+    arg = arg + '&page=' + String(currentPagination.currentPage);
+    if (currentBrand != "All brands") {arg = arg + '&brand=' + currentBrand;}
+    if (Reason_Price_Bool) {arg = arg + '&price=50';}
+    if (recent_bool) {arg = arg + '&recent';}
+    if (currentSort != "no-sort") {
+        if (currentSort == "price-asc") { arg = arg + '&priceCheapSort'}
+        if (currentSort == "price-desc") { arg = arg + '&priceExpensiveSort'}
+        if (currentSort == "date-asc") { arg = arg + '&dateSort'}
+        if (currentSort == "date-desc") { arg = arg + '&dateSortAncient'}
+    }
+    console.log(arg);
+}
+
+
+
 /**
  * Declaration of all Listeners
  */
+
+
+
+
+
+
+
 
 /**
  * Select the number of products to display
  */
 selectShow.addEventListener('change', async (event) => {
-  const products = await fetchProducts();
-  setCurrentProducts(products);
-  sortByBrands(allProducts, brands[currentBrandIndex]);
-  if (sortPriceBool) {
-	  allProductsSorted.sort((a,b) => a.price - b.price);
-  }
-  if (sortDateBool) {
-	  allProductsSorted.sort((a,b) => {
-			const da = new Date(a.released);
-			const db = new Date(b.released);
-			return da - db;
-		  
-	  });
-  }
-  spliceProducts(currentPagination.currentPage, parseInt(event.target.value));
-  render(currentProducts, currentPagination);
+    currentPagination['limit'] = parseInt(event.target.value);
+    setArg();
+    const products = await fetchProducts(search + arg);
+    brands = await fetchBrands();
+    setCurrentProducts(products);
+    render(allProducts, currentPagination);
 });
 
 selectPage.addEventListener('change', async (event) => {
-  const products = await fetchProducts();
-  setCurrentProducts(products);
-  sortByBrands(allProducts, brands[currentBrandIndex]);
-  if (sortPriceBool) {
-	  allProductsSorted.sort((a,b) => a.price - b.price);
-  }
-  if (sortDateBool) {
-	  allProductsSorted.sort((a,b) => {
-			const da = new Date(a.released);
-			const db = new Date(b.released);
-			return da - db;
-		  
-	  });
-  }
-  spliceProducts(parseInt(event.target.value), currentPagination.pageSize);
-  render(currentProducts, currentPagination);
+    currentPagination['currentPage'] = parseInt(event.target.value);
+    setArg();
+    const products = await fetchProducts(search + arg);
+    brands = await fetchBrands();
+    setCurrentProducts(products);
+    render(allProducts, currentPagination);
 });
 
 selectBrand.addEventListener('change', async (event) => {
-  const products = await fetchProducts();
-  setCurrentProducts(products);
-  sortByBrands(allProducts, event.target.value);
-  if (sortPriceBool) {
-	  allProductsSorted.sort((a,b) => a.price - b.price);
-  }
-  if (sortDateBool) {
-	  allProductsSorted.sort((a,b) => {
-			const da = new Date(a.released);
-			const db = new Date(b.released);
-			return da - db;
-		  
-	  });
-  }
-  spliceProducts(1, currentPagination.pageSize);
-  render(currentProducts, currentPagination);
-});
-
-sortPriceButton.addEventListener('click', async (event) => {
-  const products = await fetchProducts();
-  setCurrentProducts(products);
-  sortByBrands(allProducts, brands[currentBrandIndex]);
-  if (!sortPriceBool) {
-	allProductsSorted.sort((a,b) => a.price - b.price);
-	sortPriceBool = true;
-	sortPriceButton.style.backgroundColor = "#63E5FF";
-
-  }
-  else {
-	sortPriceBool = false;
-	sortPriceButton.style.backgroundColor = "white";
-  }
-  if (sortDateBool) {
-	sortDateBool = false;
-	sortDateButton.style.backgroundColor = "white";
-  }
+    currentBrand = event.target.value;
+    currentBrandIndex = brands.findIndex(x => (x == currentBrand));
+    setArg();
+    const products = await fetchProducts(search + arg);
+    brands = await fetchBrands();
+    setCurrentProducts(products);
+    render(allProducts, currentPagination);
   
-  spliceProducts(1, currentPagination.pageSize);
-  render(currentProducts, currentPagination);
 });
 
-sortDateButton.addEventListener('click', async (event) => {
-  const products = await fetchProducts();
-  setCurrentProducts(products);
-  sortByBrands(allProducts, brands[currentBrandIndex]);
-  if (sortPriceBool) {
-	sortPriceBool = false;
-	sortPriceButton.style.backgroundColor = "white";
-  }
-  if (!sortDateBool) {
-	allProductsSorted.sort((a,b) => {
-			const da = new Date(a.released);
-			const db = new Date(b.released);
-			return da - db;
-		  
-	  });
-	sortDateBool = true;
-	sortDateButton.style.backgroundColor = "#63E5FF";
-
+Reason_Price.addEventListener('click', async (event) => {
+  if (!Reason_Price_Bool) {
+	Reason_Price_Bool = true;
+	Reason_Price.style.backgroundColor = "#63E5FF";
   }
   else {
-	sortDateBool = false;
-	sortDateButton.style.backgroundColor = "white";
+	Reason_Price_Bool = false;
+	Reason_Price.style.backgroundColor = "white";
   }
-  spliceProducts(1, currentPagination.pageSize);
-  render(currentProducts, currentPagination);
-  console.log(allProductsSorted);
+    setArg();
+    const products = await fetchProducts(search + arg);
+    brands = await fetchBrands();
+    setCurrentProducts(products);
+    render(allProducts, currentPagination);
 });
+
+recent.addEventListener('click', async (event) => {
+    if (!recent_bool) {
+        recent_bool = true;
+        recent.style.backgroundColor = "#63E5FF";
+      }
+      else {
+        recent_bool = false;
+        recent.style.backgroundColor = "white";
+      }
+        setArg();
+        const products = await fetchProducts(search + arg);
+        brands = await fetchBrands();
+        setCurrentProducts(products);
+        render(allProducts, currentPagination);
+});
+
+sortSelector.addEventListener('change', async (event) => {
+    currentSort = event.target.value;
+    currentSortIndex = sorts.findIndex(x => (x == currentSort));
+    setArg();
+    const products = await fetchProducts(search + arg);
+    brands = await fetchBrands();
+    setCurrentProducts(products);
+    render(allProducts, currentPagination);
+});
+
 
 
 
 document.addEventListener('DOMContentLoaded', async () => {
-  const products = await fetchProducts();
-  brands = await fetchBrands();
-  setCurrentProducts(products);
-  sortByBrands(allProducts);
-  spliceProducts();
-  render(currentProducts, currentPagination);
-  console.log(allProductsSorted);
+    const products = await fetchProducts(search);
+    brands = await fetchBrands();
+    setCurrentProducts(products);
+    render(allProducts, currentPagination);
 });
