@@ -1,3 +1,5 @@
+//!!! Make sure the IP adress of the MongoDB Cluster in Network Access is configured!!!
+
 const {MongoClient} = require('mongodb');
 
 const MONGODB_URI = 'mongodb+srv://yutari:Password123@clearfashion.tpnzwgj.mongodb.net/?retryWrites=true&w=majority';
@@ -42,12 +44,42 @@ async function main(){
 		console.log(products.length);
 		await client.close();
 	}
-	//insert_marketplace();
+	async function sortedByPrice() {
+		const collection = db.collection('products');
+		var collection_products = await collection.find().toArray();
+		var sorted_products = collection_products.sort(function(a,b) {return a.price - b.price});
+		console.log(sorted_products);
+		console.log(sorted_products.length);
+		await client.close();
+	}
+	async function sortedByDate() {
+		const collection = db.collection('products');
+		var collection_products = await collection.find().toArray();
+		var sorted_products = collection_products.sort(function(a,b) {var dateA = new Date(a.released);  var dateB = new Date(b.released); return dateA - dateB;});
+		console.log(sorted_products);
+		console.log(sorted_products.length);
+		await client.close();
+	}
+	//Gives all the products released after a given date.
+	async function dateLessThan(p) {
+		const collection = db.collection('products');
+		var products = await collection.find({"released" : {$gte : p}}).toArray();
+		var sorted_products = products.sort(function(a,b) {var dateA = new Date(a.released);  var dateB = new Date(b.released); return dateA - dateB;});
+		console.log(sorted_products);
+		console.log(sorted_products.length);
+		await client.close();
+	}
+	
+	
 	const [,, param] = process.argv;
-
-	pricelessthan(param);
+	
+	//insert_marketplace();
+	//searchfor(brand);
+	//pricelessthan(param);
+	//sortedByPrice();
+	//sortedByDate();
+	dateLessThan(param);
 	//console.log(result);
-	//client.close();
 }
 
 
