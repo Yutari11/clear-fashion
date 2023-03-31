@@ -70,7 +70,6 @@ const setCurrentProducts = (results) => {
   //console.log('All products');
   //console.log(allProducts);
   currentPagination = {'currentPage':results.currentPage, 'pageCount': Math.ceil(results.totalProducts /results.limit), 'limit' : results.limit, 'totalProducts': results.totalProducts, "nbNew" : results.nbNew, "p50":results.p50, "p90":results.p90,"p95":results.p95, "most_recent":results.most_recent};
-  console.log(currentPagination);
 };
 
 
@@ -215,7 +214,6 @@ const setArg = () => {
         if (currentSort == "date-asc") { arg = arg + '&dateSort'}
         if (currentSort == "date-desc") { arg = arg + '&dateSortAncient'}
     }
-    console.log(arg);
 }
 
 

@@ -42,7 +42,6 @@ app.get('/products/search', (request, response) => {
 	if (request.query.dateSortAncient != undefined) {searchProducts = searchProducts.sort(function (a,b) {var dateA = new Date(a.released); var dateB = new Date(b.released); return dateA - dateB;})}
 	if (request.query.priceCheapSort != undefined) {searchProducts = searchProducts.sort(function (a,b) {return a.price - b.price})}
 	if (request.query.priceExpensiveSort != undefined) {searchProducts = searchProducts.sort(function (a,b) {return b.price - a.price})}
-	console.log(searchProducts.length);
 	if (searchProducts.length != 0){
 		var nbNew = searchProducts.filter(product => {var now = Date.now(); var twoWeeksBefore = new Date(now - 12096e5); var dateA = new Date(product.released); return Math.ceil(Math.abs(dateA - twoWeeksBefore) / (1000* 60*60*24)) < 100;}).length;
 		var p50 = [...searchProducts].sort(function (a,b) {return a.price - b.price})[Math.floor(searchProducts.length*0.5)].price;
