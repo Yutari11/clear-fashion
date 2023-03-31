@@ -35,6 +35,7 @@ app.get('/products/search', (request, response) => {
 	if (price != undefined) {searchProducts = searchProducts.filter(product => product.price < price)};
 	if (brand != undefined) {searchProducts = searchProducts.filter(product => product.brand == brand)};
 	if (limit == undefined) {limit = 12};
+	if (request.query.recent != undefined) {searchProducts = searchProducts.filter(product => {var now = Date.now(); var twoWeeksBefore = new Date(now - 12096e5); var dateA = new Date(product.released); return Math.ceil(Math.abs(dateA - twoWeeksBefore) / (1000* 60*60*24)) < 100;})}
 	if (request.query.brandSort != undefined) {searchProducts = searchProducts.sort(function (a,b) {if (a.brand > b.brand) {return 1} else if (a.brand < b.brand) {return -1} else {return 0}})}
 	if (request.query.dateSort != undefined) {searchProducts = searchProducts.sort(function (a,b) {var dateA = new Date(a.released); var dateB = new Date(b.released); return dateB - dateA;})}
 
