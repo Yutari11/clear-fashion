@@ -35,10 +35,16 @@ app.get('/products/search', (request, response) => {
 	if (price != undefined) {searchProducts = searchProducts.filter(product => product.price < price)};
 	if (brand != undefined) {searchProducts = searchProducts.filter(product => product.brand == brand)};
 	if (limit == undefined) {limit = 12};
+	if (request.query.brandSort != undefined) {searchProducts = searchProducts.sort(function (a,b) {if (a.brand > b.brand) {return 1} else if (a.brand < b.brand) {return -1} else {return 0}})}
+	if (request.query.dateSort != undefined) {searchProducts = searchProducts.sort(function (a,b) {var dateA = new Date(a.released); var dateB = new Date(b.released); return dateB - dateA;})}
+
 	result['limit'] = parseInt(limit);
+	result['totalProducts'] = searchProducts.length;
+	result['currentPage'] = parseInt(page);
 	searchProducts = searchProducts.slice(limit * (page-1), limit * page);
-	result['total'] = searchProducts.length;
+	result['totalOnPage'] = searchProducts.length;
 	result['results'] = searchProducts;
+	result['success'] = true;
 	response.status(200).json(result);
 });
 
