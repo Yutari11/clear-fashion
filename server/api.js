@@ -44,9 +44,9 @@ app.get('/products/search', (request, response) => {
 	if (request.query.priceExpensiveSort != undefined) {searchProducts = searchProducts.sort(function (a,b) {return b.price - a.price})}
 
 	var nbNew = searchProducts.filter(product => {var now = Date.now(); var twoWeeksBefore = new Date(now - 12096e5); var dateA = new Date(product.released); return Math.ceil(Math.abs(dateA - twoWeeksBefore) / (1000* 60*60*24)) < 100;}).length;
-	var p50 = searchProducts.sort(function (a,b) {return a.price - b.price})[Math.ceil(searchProducts.length*0.5)].price;
-	var p90 = searchProducts.sort(function (a,b) {return a.price - b.price})[Math.ceil(searchProducts.length*0.90)].price;
-	var p95 = searchProducts.sort(function (a,b) {return a.price - b.price})[Math.ceil(searchProducts.length*0.95)].price;
+	var p50 = searchProducts.sort(function (a,b) {return a.price - b.price})[Math.floor(searchProducts.length*0.5)].price;
+	var p90 = searchProducts.sort(function (a,b) {return a.price - b.price})[Math.floor(searchProducts.length*0.90)].price;
+	var p95 = searchProducts.sort(function (a,b) {return a.price - b.price})[Math.floor(searchProducts.length*0.95)].price;
 	result['nbNew'] = nbNew
 	result['p50'] = p50;
 	result['p90'] = p90;
