@@ -38,6 +38,11 @@ app.get('/products/search', (request, response) => {
 	if (request.query.recent != undefined) {searchProducts = searchProducts.filter(product => {var now = Date.now(); var twoWeeksBefore = new Date(now - 12096e5); var dateA = new Date(product.released); return Math.ceil(Math.abs(dateA - twoWeeksBefore) / (1000* 60*60*24)) < 100;})}
 	if (request.query.brandSort != undefined) {searchProducts = searchProducts.sort(function (a,b) {if (a.brand > b.brand) {return 1} else if (a.brand < b.brand) {return -1} else {return 0}})}
 	if (request.query.dateSort != undefined) {searchProducts = searchProducts.sort(function (a,b) {var dateA = new Date(a.released); var dateB = new Date(b.released); return dateB - dateA;})}
+	if (request.query.dateSortAncient != undefined) {searchProducts = searchProducts.sort(function (a,b) {var dateA = new Date(a.released); var dateB = new Date(b.released); return dateA - dateB;})}
+	if (request.query.priceCheapSort != undefined) {searchProducts = searchProducts.sort(function (a,b) {return b.price - a.price})}
+	if (request.query.priceExpensiveSort != undefined) {searchProducts = searchProducts.sort(function (a,b) {return a.price - b.price})}
+
+
 
 	result['limit'] = parseInt(limit);
 	result['totalProducts'] = searchProducts.length;
