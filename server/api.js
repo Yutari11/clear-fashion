@@ -31,6 +31,7 @@ app.get('/products/search', (request, response) => {
 	var page = request.query.page;
 	var result = {};
 	var searchProducts = [...marketplace];
+
 	if (page == undefined) {page = 1;};
 	if (price != undefined) {searchProducts = searchProducts.filter(product => product.price < price)};
 	if (brand != undefined) {searchProducts = searchProducts.filter(product => product.brand == brand)};
@@ -42,8 +43,15 @@ app.get('/products/search', (request, response) => {
 	if (request.query.priceCheapSort != undefined) {searchProducts = searchProducts.sort(function (a,b) {return a.price - b.price})}
 	if (request.query.priceExpensiveSort != undefined) {searchProducts = searchProducts.sort(function (a,b) {return b.price - a.price})}
 
-
-
+	var nbNew = searchProducts.filter(product => {var now = Date.now(); var twoWeeksBefore = new Date(now - 12096e5); var dateA = new Date(product.released); return Math.ceil(Math.abs(dateA - twoWeeksBefore) / (1000* 60*60*24)) < 100;}).length;
+	var p50 = searchProducts.sort(function (a,b) {return a.price - b.price})[Math.ceil(searchProducts.length*0.5)].price;
+	var p90 = searchProducts.sort(function (a,b) {return a.price - b.price})[Math.ceil(searchProducts.length*0.90)].price;
+	var p95 = searchProducts.sort(function (a,b) {return a.price - b.price})[Math.ceil(searchProducts.length*0.95)].price;
+	result['nbNew'] = nbNew
+	result['p50'] = p50;
+	result['p90'] = p90;
+	result['p95'] = p95;
+	result['most_recent'] = searchProducts.sort(function (a,b) {var dateA = new Date(a.released); var dateB = new Date(b.released); return dateB - dateA;})[0].released;
 	result['limit'] = parseInt(limit);
 	result['totalProducts'] = searchProducts.length;
 	result['currentPage'] = parseInt(page);
@@ -52,6 +60,7 @@ app.get('/products/search', (request, response) => {
 	result['results'] = searchProducts;
 	result['success'] = true;
 	response.status(200).json(result);
+
 });
 
 app.get('/products/:id', (request, response) => {
