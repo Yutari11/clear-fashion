@@ -49,6 +49,16 @@ app.get('/products/:id', (request, response) => {
 	response.status(200).json(product);
 });
 
+var i;
+app.get('/brands', (request, response) => {
+	brands = [];
+	for (i = 0; i < marketplace.length; i++) {
+		brands.push(marketplace[i].brand)
+	}
+	const brandsUnique = [...new Set(brands)];
+	response.status(200).json({"success":true, "data": {"result" : brandsUnique}});
+})
+
 
 
 app.listen(PORT);

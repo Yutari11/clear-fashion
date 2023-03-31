@@ -38,6 +38,7 @@ const selectBrand = document.querySelector('#brand-select');
 const sortPriceButton = document.querySelector('#sort-price');
 const sortDateButton = document.querySelector('#sort-date');
 const sortNoneButton = document.querySelector('#sort-none');
+const sortSelector = document.querySelector('#sort-select');
 
 
 /**
